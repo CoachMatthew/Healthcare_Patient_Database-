@@ -3,7 +3,7 @@
 This report looks closely at the Healthcare Patient database. The database has information about patients, doctors, locations, and hospital departments.
 Problem Statement
 •	Fetch patients with the same age.
-•	Find the second oldest patient and their doctor and department.
+•	Find the second oldest patient and their doct or and department.
 •	Get the maximum age per department and the patient name.
 •	Doctor-wise count of patients sorted by count in descending order.
 •	Fetch only the first name from the PatientName and append the age.
