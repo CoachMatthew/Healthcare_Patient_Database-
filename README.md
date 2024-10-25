@@ -1,22 +1,26 @@
 # Healthcare Patient Database Analysis
 
 This report looks closely at the Healthcare Patient database. The database has information about patients, doctors, locations, and hospital departments.
-Problem Statement
-•	Fetch patients with the same age.
-•	Find the second oldest patient and their doct or and department.
-•	Get the maximum age per department and the patient name.
-•	Doctor-wise count of patients sorted by count in descending order.
-•	Fetch only the first name from the PatientName and append the age.
-•	Fetch patients with odd ages.
-•	Create a view to fetch patient details with an age greater than 50.
-•	Create a procedure to update the patient's age by 10% where the department is 'Cardiology' and the doctor is not 'Dr. Smith'.
-•	Create a stored procedure to fetch patient details along with their doctor, department, and state, including error handling.
+
+# Problem Statement
+
+- Fetch patients with the same age. 
+-	Find the second oldest patient and their doct or and department.
+-	Get the maximum age per department and the patient name.
+-	Doctor-wise count of patients sorted by count in descending order.
+-	Fetch only the first name from the PatientName and append the age.
+-	Fetch patients with odd ages.
+-	Create a view to fetch patient details with an age greater than 50.
+-	Create a procedure to update the patient's age by 10% where the department is 'Cardiology' and the doctor is not 'Dr. Smith'.
+-	Create a stored procedure to fetch patient details along with their doctor, department, and state, including error handling.
+  
 # Data Source
 Healthcare industry
 # Tools Used
 •	SSMS
 # Query
-CREATE DATABASE HealthcarePatientDb;
+```
+ CREATE DATABASE HealthcarePatientDb;
 USE HealthcaretientDb;
 CREATE TABLE Patient(
 PatientID VARCHAR(20) PRIMARY KEY,
@@ -198,6 +202,9 @@ BEGIN
         RAISERROR (@ErrorMessage, 16, 1);
     END CATCH;
 END;
+ ```
+
+
 
 # Image
  ![11](https://github.com/user-attachments/assets/2d0bfe1d-9827-4742-9caf-109a7b9c9472)
