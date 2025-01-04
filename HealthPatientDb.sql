@@ -9,14 +9,14 @@ Gender VARCHAR(20),
 DoctorID INT,
 FOREIGN KEY (DoctorID) REFERENCES Doctor(DoctorID), 
 StateID INT,
-FOREIGN KEY (StateID) REFERENCES Statemaster(StateID));
+FOREIGN KEY (StateID) REFERENCES HStatemaster(StateID));
 
 CREATE TABLE Doctor(
 DoctorID INT PRIMARY KEY,
 DoctorName VARCHAR(20),
 Specialization  VARCHAR(20));
 
-CREATE TABLE Statemaster(
+CREATE TABLE HStatemaster(
 StateID INT PRIMARY KEY,
 StateName VARCHAR(20));
 
@@ -45,7 +45,7 @@ VALUES
 (4, 'Dr. Johnson', 'Dermatology');
 
 
-INSERT INTO Statemaster(StateID,StateName)
+INSERT INTO HStatemaster(StateID,StateName)
 VALUES 
 (101, 'Lagos'),
 (102, 'Abuja'),
@@ -67,11 +67,29 @@ VALUES
 
 SELECT * FROM Patient;
 
+-- Analytical questions
+
 --1. Fetch patients with the same age.
-SELECT Age, COUNT(*) AS PatientCount 
+SELECT PatientName, Age 
+FROM Patient
+WHERE Age in (
+SELECT Age
 FROM Patient
 GROUP BY Age
-HAVING COUNT(*) > 0;
+HAVING COUNT(PatientID)>1);
+
+---------- STUDY
+ 
+SELECT shipcountry, AVG(number_orders)
+FROM ( SELECT customerid, shipcountry, COUNT(*) AS num_orders
+FROM orders
+GROUP BY 1,2) sub
+GROUP BY 1
+
+SELECT *
+FROM orders
+WHERE employeeid IN (SELECT employeeid from employees WHERE first name LIKE LOWER('%a%'))
+
 
 -- 2. Find the second oldest patient and their doctor and department.
 
@@ -84,53 +102,24 @@ OFFSET 1 ROW
 FETCH NEXT 1 ROW ONLY;
 
 -- 3. Get the maximum age per department and the patient name.
-SELECT 
-  dept.MDepartmentName,
-  p.Age AS MaxAge,
-  p.PatientName
-FROM 
-  Patient p
+SELECT dept.MDepartmentName, MAX(p.Age) AS MaxAge, p.PatientName
+FROM Patient p
   JOIN Doctor d ON p.DoctorID = d.DoctorID
   JOIN MDepartment dept ON d.Specialization = dept.MDepartmentName
-WHERE 
-  (dept.MDepartmentName, p.Age) IN (
-    SELECT 
-      dept.MDepartmentName,
-      MAX(p.Age)
-    FROM 
-      Patient p
-      JOIN Doctor d ON p.DoctorID = d.DoctorID
-      JOIN MDepartment dept ON d.Specialization = dept.MDepartmentName
-    GROUP BY 
-      dept.MDepartmentName
-  );
+GROUP BY dept.MDepartmentName, p.PatientName;
+     
 
 -- 4. Doctor-wise count of patients sorted by count in descending order.
-SELECT 
-  dept.MDepartmentName,
-  p.Age AS MaxAge,
-  p.PatientName
-FROM 
-  Patient p
-  JOIN Doctor d ON p.DoctorID = d.DoctorID
-  JOIN MDepartment dept ON d.Specialization = dept.MDepartmentName
-WHERE 
-  (dept.MDepartmentName, p.Age) IN (
-    SELECT 
-      dept.MDepartmentName,
-      MAX(p.Age)
-    FROM 
-      Patient p
-      JOIN Doctor d ON p.DoctorID = d.DoctorID
-      JOIN MDepartment dept ON d.Specialization = dept.MDepartmentName
-    GROUP BY 
-      dept.MDepartmentName
-  );
+
+SELECT d.DoctorName, COUNT(p.PatientID) as PatientCount
+FROM Doctor d
+JOIN patient p ON d.DoctorID = p.DoctorID 
+GROUP BY d.DoctorName
+ORDER BY PatientCount DESC;
 
 -- 5. Fetch only the first name from the PatientName and append the age.
-SELECT 
-  LEFT(PatientName, CHARINDEX(' ', PatientName) - 1) AS FirstName,
-  Age
+SELECT
+ CONCAT(LEFT(PatientName,CHARINDEX(' ',PatientName)-1),'_',age) AS PatientName_Age
 FROM 
   Patient;
 
